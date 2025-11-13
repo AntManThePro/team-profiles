@@ -122,17 +122,14 @@
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="header">
         <h1>Team Profile Builder</h1>
         <button id="add-new-btn">Add New Profile</button>
     </div>
-
     <div id="profile-list-view">
         <div id="profile-list"></div>
     </div>
-
     <div id="profile-form-view">
         <h2 id="form-title">Add New Profile</h2>
         <form id="profile-form">
@@ -170,7 +167,7 @@
                     <label for="struggles_with">Struggles With</label>
                     <textarea id="struggles_with"></textarea>
                 </div>
-                 <div class="form-group">
+                <div class="form-group">
                     <label for="agent_responsiveness">Agent Responsiveness</label>
                     <input type="text" id="agent_responsiveness">
                 </div>
@@ -178,7 +175,7 @@
                     <label for="strengths">Strengths</label>
                     <input type="text" id="strengths">
                 </div>
-                 <div class="form-group">
+                <div class="form-group">
                     <label for="development_areas">Development Areas</label>
                     <input type="text" id="development_areas">
                 </div>
@@ -202,7 +199,6 @@
         </form>
     </div>
 </div>
-
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const profileListView = document.getElementById('profile-list-view');
@@ -213,7 +209,6 @@
         const profileForm = document.getElementById('profile-form');
         const formTitle = document.getElementById('form-title');
         const profileIdInput = document.getElementById('profile-id');
-
         let profiles = [
             {
                 id: 1,
@@ -249,7 +244,7 @@
                 id: 4,
                 name: "Dequan",
                 strengths: "One of the best, very experienced, performs well, can direct others, competitive, understands the work well.",
-                development_areas: "Is one of the young a and could be difficult to spesk over his elders! "
+                development_areas: "Is one of the young and could be difficult to speak over his elders."
             },
             {
                 id: 5,
@@ -260,7 +255,7 @@
             {
                 id: 6,
                 name: "Rod",
-                strengths: "seems to be separating himself from us lately but it's amazing",
+                strengths: "Seems to be separating himself from us lately but is amazing.",
                 development_areas: ""
             },
             {
@@ -272,12 +267,12 @@
             {
                 id: 8,
                 name: "Luke Wilson",
-                strengths: "Good, excited, and motivated new father",
+                strengths: "Good, excited, and motivated new father.",
                 development_areas: ""
             },
             {
                 id: 9,
-                name: "Thomari ",
+                name: "Thomari",
                 strengths: "Tries his heart out, very dedicated.",
                 development_areas: "Was one of the slower team members; has issues with coworkers and potentially external matters."
             },
@@ -308,7 +303,7 @@
                 strengths: "Organized, collaborative",
                 development_areas: "May need occasional guidance when priorities suddenly shift",
                 reminders_via: "Email or Chat",
-                if_task_delayed: "Gently remind, ask for updated ETA",
+                if_task_delayed: "Gently remind, ask for updated ETA"
             },
             {
                 id: 13,
@@ -318,23 +313,23 @@
             },
             {
                 id: 14,
-                name: "Chris Jiminez", 
-                strengtgs: "attention and lives affirmations. 
+                name: "Chris Jiminez",
+                strengths: "Needs attention and loves affirmations.",
                 development_areas: "Can abuse power, may delegate without contributing, seems unmotivated at times, quiet and may rush through check-ins."
             },
             {
                 id: 15,
                 name: "Daniel Ramirez",
-                strengths: "May have communication issues with supervisor., loves his job, takes on a lot of responsibility.",
+                strengths: "Loves his job, takes on a lot of responsibility.",
                 development_areas: "Exhausted from working two jobs and having a large family, which can lead to mistakes."
             },
             {
                 id: 16,
-                name: "",
+                name: "Unnamed Team Member",
+                strengths: "",
                 development_areas: "Can be easily manipulated by partners, may follow others without question, needs clear direction to avoid doing 'whatever he wants'."
             }
         ];
-
         function renderProfiles() {
             profileList.innerHTML = '';
             profiles.forEach(profile => {
@@ -353,12 +348,10 @@
                 profileList.appendChild(card);
             });
         }
-
         function showForm(profile) {
             profileListView.style.display = 'none';
             addNewBtn.style.display = 'none';
             profileFormView.style.display = 'block';
-
             if (profile) {
                 formTitle.textContent = 'Edit Profile';
                 profileIdInput.value = profile.id;
@@ -382,16 +375,13 @@
                 profileIdInput.value = '';
             }
         }
-
         function hideForm() {
             profileFormView.style.display = 'none';
             profileListView.style.display = 'block';
             addNewBtn.style.display = 'block';
         }
-
         addNewBtn.addEventListener('click', () => showForm());
         cancelBtn.addEventListener('click', hideForm);
-
         profileForm.addEventListener('submit', e => {
             e.preventDefault();
             const id = profileIdInput.value;
@@ -409,23 +399,18 @@
                 development_areas: document.getElementById('development_areas').value,
                 reminders_via: document.getElementById('reminders_via').value,
                 if_task_delayed: document.getElementById('if_task_delayed').value,
-                personality_type: document.getElementById('personality_type').value,
+                personality_type: document.getElementById('personality_type').value
             };
-
             if (id) {
-                // Update
                 const index = profiles.findIndex(p => p.id == id);
                 profiles[index] = { ...profiles[index], ...profileData, id: parseInt(id) };
             } else {
-                // Create
                 profileData.id = profiles.length > 0 ? Math.max(...profiles.map(p => p.id)) + 1 : 1;
                 profiles.push(profileData);
             }
-
             renderProfiles();
             hideForm();
         });
-
         profileList.addEventListener('click', e => {
             if (e.target.classList.contains('btn-edit')) {
                 const id = e.target.dataset.id;
@@ -440,10 +425,8 @@
                 }
             }
         });
-
         renderProfiles();
     });
 </script>
-
 </body>
 </html>
