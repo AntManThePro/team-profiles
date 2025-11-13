@@ -1,214 +1,448 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team Profile Builder</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #1a1a1a; color: #f0f0f0; }
-        .container { max-width: 800px; }
-        .card { background-color: #2a2a2a; border: 1px solid #444; }
-        .list-group-item { background-color: #2a2a2a; border: 1px solid #444; color: #f0f0f0; }
-        .list-group-item-action:hover { background-color: #3a3a3a; }
-        .form-control { background-color: #333; color: #f0f0f0; border-color: #555; }
-        .form-control:focus { background-color: #333; color: #f0f0f0; border-color: #0d6efd; box-shadow: none; }
-        .form-label { color: #ccc; }
-        .btn-primary { background-color: #0d6efd; border-color: #0d6efd; }
-        .btn-link, .btn-secondary { color: #ccc; }
-        h2, h5 { color: #fff; }
-        #listView, #formView, #deleteModal { display: none; } 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+        .header {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .btn-delete {
+            background-color: #e74c3c;
+        }
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+        .btn-edit {
+            background-color: #f39c12;
+        }
+        .btn-edit:hover {
+            background-color: #e67e22;
+        }
+        #profile-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .profile-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+        .profile-card h3 {
+            margin-top: 0;
+        }
+        .profile-card .actions {
+            margin-top: auto;
+            padding-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        #profile-form-view {
+            display: none;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="container mt-5">
 
-        <!-- List View -->
-        <div id="listView">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Team Members</h2>
-                <button class="btn btn-primary" id="addProfileBtn">+ Add New Profile</button>
-            </div>
-            <div id="profilesContainer" class="list-group"></div>
-        </div>
-
-        <!-- Form View -->
-        <div id="formView">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <button class="btn btn-link" id="backToListBtn">← Back to List</button>
-                <h2 id="formTitle">Add New Profile</h2>
-                <div></div>
-            </div>
-            <form id="profileForm">
-                <input type="hidden" id="profileId">
-                <div class="card mb-3">
-                    <div class="card-header">Basic Information</div>
-                    <div class="card-body">
-                        <div class="mb-3"><label class="form-label">Name</label><input type="text" id="name" class="form-control" required></div>
-                        <div class="mb-3"><label class="form-label">Role/Title</label><input type="text" id="role" class="form-control"></div>
-                    </div>
-                </div>
-                <div class="card mb-3">
-                    <div class="card-header">Work Preferences</div>
-                    <div class="card-body">
-                         <div class="mb-3"><label class="form-label">Key Responsibilities</label><textarea id="responsibilities" class="form-control"></textarea></div>
-                         <div class="mb-3"><label class="form-label">Strengths</label><textarea id="strengths" class="form-control"></textarea></div>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                    <button type="submit" class="btn btn-success">Save Profile</button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Delete Confirmation Modal -->
-        <div id="deleteModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center;">
-            <div class="card" style="width: 400px;">
-                <div class="card-body">
-                    <h5 class="card-title">Confirm Delete</h5>
-                    <p>Are you sure you want to delete this profile? This action cannot be undone.</p>
-                    <div class="d-flex justify-content-end gap-2">
-                        <button class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button>
-                        <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="container">
+    <div class="header">
+        <h1>Team Profile Builder</h1>
+        <button id="add-new-btn">Add New Profile</button>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const listView = document.getElementById('listView');
-            const formView = document.getElementById('formView');
-            const deleteModal = document.getElementById('deleteModal');
-            
-            const addProfileBtn = document.getElementById('addProfileBtn');
-            const backToListBtn = document.getElementById('backToListBtn');
-            const profileForm = document.getElementById('profileForm');
-            const cancelBtn = document.getElementById('cancelBtn');
-            const profilesContainer = document.getElementById('profilesContainer');
-            const formTitle = document.getElementById('formTitle');
-            const profileIdInput = document.getElementById('profileId');
+    <div id="profile-list-view">
+        <div id="profile-list"></div>
+    </div>
 
-            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-            let profileToDelete = null;
+    <div id="profile-form-view">
+        <h2 id="form-title">Add New Profile</h2>
+        <form id="profile-form">
+            <input type="hidden" id="profile-id">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="role">Role/Title</label>
+                    <input type="text" id="role">
+                </div>
+                <div class="form-group full-width">
+                    <label for="key_responsibilities">Key Responsibilities</label>
+                    <textarea id="key_responsibilities"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="communicates_better_via">Communicates Better Via</label>
+                    <input type="text" id="communicates_better_via">
+                </div>
+                <div class="form-group">
+                    <label for="communication_style">Communication Style</label>
+                    <input type="text" id="communication_style">
+                </div>
+                <div class="form-group">
+                    <label for="responsiveness">Responsiveness</label>
+                    <input type="text" id="responsiveness">
+                </div>
+                <div class="form-group">
+                    <label for="works_best_when">Works Best When</label>
+                    <textarea id="works_best_when"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label for="struggles_with">Struggles With</label>
+                    <textarea id="struggles_with"></textarea>
+                </div>
+                 <div class="form-group">
+                    <label for="agent_responsiveness">Agent Responsiveness</label>
+                    <input type="text" id="agent_responsiveness">
+                </div>
+                <div class="form-group">
+                    <label for="strengths">Strengths</label>
+                    <input type="text" id="strengths">
+                </div>
+                 <div class="form-group">
+                    <label for="development_areas">Development Areas</label>
+                    <input type="text" id="development_areas">
+                </div>
+                <div class="form-group">
+                    <label for="reminders_via">Reminders Via</label>
+                    <input type="text" id="reminders_via">
+                </div>
+                <div class="form-group">
+                    <label for="if_task_delayed">If Task is Delayed</label>
+                    <input type="text" id="if_task_delayed">
+                </div>
+                <div class="form-group">
+                    <label for="personality_type">Personality Type</label>
+                    <input type="text" id="personality_type">
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="cancel-btn" class="btn-secondary">Cancel</button>
+                    <button type="submit">Save Profile</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-            const showListView = () => {
-                listView.style.display = 'block';
-                formView.style.display = 'none';
-                deleteModal.style.display = 'none';
-                loadProfiles();
-            };
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const profileListView = document.getElementById('profile-list-view');
+        const profileFormView = document.getElementById('profile-form-view');
+        const profileList = document.getElementById('profile-list');
+        const addNewBtn = document.getElementById('add-new-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const profileForm = document.getElementById('profile-form');
+        const formTitle = document.getElementById('form-title');
+        const profileIdInput = document.getElementById('profile-id');
 
-            const showFormView = (profile = null) => {
-                listView.style.display = 'none';
-                formView.style.display = 'block';
+        let profiles = [
+            {
+                id: 1,
+                name: "Alex Cuadrado",
+                role: "Team Lead",
+                key_responsibilities: "Executive support, project coordination",
+                communicates_better_via: "Chat or Email",
+                communication_style: "Detailed and structured",
+                responsiveness: "Fast",
+                works_best_when: "Receives clear instructions",
+                struggles_with: "Tasks are vague or assigned verbally without notes",
+                agent_responsiveness: "Prefers a quick message to recap tasks or to-do",
+                strengths: "Organized, collaborative",
+                development_areas: "May need occasional guidance when priorities suddenly shift",
+                reminders_via: "Email or Chat",
+                if_task_delayed: "Gently remind, ask for updated ETA",
+                personality_type: ""
+            },
+            {
+                id: 2,
+                name: "Rick Morp",
+                role: "Trainee",
+                strengths: "Very experienced (11+ years), knowledgeable, a great player.",
+                development_areas: "Has some external problems; feels team members should already know their tasks without guidance."
+            },
+            {
+                id: 3,
+                name: "Angel Rin",
+                strengths: "Stable, showing improvement, has a few years of experience.",
+                development_areas: "Recently returned from parental leave."
+            },
+            {
+                id: 4,
+                name: "Juan",
+                strengths: "One of the best, very experienced, performs well, can direct others, competitive, understands the work well.",
+                development_areas: ""
+            },
+            {
+                id: 5,
+                name: "Ryan Davis",
+                strengths: "Performs very well when focused and engaged.",
+                development_areas: "Can seem disengaged at times; at risk of getting into trouble."
+            },
+            {
+                id: 6,
+                name: "Andy",
+                strengths: "Really good, doing a great job, motivated as a new father.",
+                development_areas: ""
+            },
+            {
+                id: 7,
+                name: "Andre Helms",
+                strengths: "Good, excited, and motivated new father.",
+                development_areas: "May have communication issues with supervisor."
+            },
+            {
+                id: 8,
+                name: "Luke",
+                strengths: "",
+                development_areas: ""
+            },
+            {
+                id: 9,
+                name: "Thomari Vance",
+                strengths: "Tries his heart out, very dedicated.",
+                development_areas: "Was one of the slower team members; has issues with coworkers and potentially external matters."
+            },
+            {
+                id: 10,
+                name: "Kristin",
+                role: "Team Lead, Training",
+                strengths: "",
+                development_areas: ""
+            },
+            {
+                id: 11,
+                name: "Julio Chavez",
+                strengths: "Good at following directions, knows the job, talented, and can figure things out.",
+                development_areas: "Tends to only hear what he wants to hear; requires a specific communication style to manage effectively."
+            },
+            {
+                id: 12,
+                name: "Paul",
+                role: "Team Lead",
+                key_responsibilities: "Executive support, project coordination",
+                communicates_better_via: "Chat or Email",
+                communication_style: "Detailed and structured",
+                responsiveness: "Fast",
+                works_best_when: "Receives clear instructions",
+                struggles_with: "Tasks are vague or assigned verbally without notes",
+                agent_responsiveness: "Prefers a quick message to recap tasks or to-do",
+                strengths: "Organized, collaborative",
+                development_areas: "May need occasional guidance when priorities suddenly shift",
+                reminders_via: "Email or Chat",
+                if_task_delayed: "Gently remind, ask for updated ETA",
+            },
+            {
+                id: 13,
+                name: "Austin Hoover",
+                strengths: "Knows the industry well (long-time experience), can be worked with, has shown a positive attitude change.",
+                development_areas: "Stubborn, resistant to learning new things initially."
+            },
+            {
+                id: 14,
+                name: "Chris Gindenz",
+                development_areas: "Can abuse power, may delegate without contributing, seems unmotivated at times, quiet and may rush through check-ins."
+            },
+            {
+                id: 15,
+                name: "Daniel Ramirez",
+                strengths: "Wants to do good, loves his job, takes on a lot of responsibility.",
+                development_areas: "Exhausted from working two jobs and having a large family, which can lead to mistakes."
+            },
+            {
+                id: 16,
+                name: "Janelle",
+                development_areas: "Can be easily manipulated by partners, may follow others without question, needs clear direction to avoid doing 'whatever he wants'."
+            }
+        ];
+
+        function renderProfiles() {
+            profileList.innerHTML = '';
+            profiles.forEach(profile => {
+                const card = document.createElement('div');
+                card.className = 'profile-card';
+                card.innerHTML = `
+                    <h3>${profile.name}</h3>
+                    <p><strong>Role:</strong> ${profile.role || 'N/A'}</p>
+                    <p><strong>Strengths:</strong> ${profile.strengths || 'N/A'}</p>
+                    <p><strong>Development Areas:</strong> ${profile.development_areas || 'N/A'}</p>
+                    <div class="actions">
+                        <button class="btn-edit" data-id="${profile.id}">Edit</button>
+                        <button class="btn-delete" data-id="${profile.id}">Delete</button>
+                    </div>
+                `;
+                profileList.appendChild(card);
+            });
+        }
+
+        function showForm(profile) {
+            profileListView.style.display = 'none';
+            addNewBtn.style.display = 'none';
+            profileFormView.style.display = 'block';
+
+            if (profile) {
+                formTitle.textContent = 'Edit Profile';
+                profileIdInput.value = profile.id;
+                document.getElementById('name').value = profile.name || '';
+                document.getElementById('role').value = profile.role || '';
+                document.getElementById('key_responsibilities').value = profile.key_responsibilities || '';
+                document.getElementById('communicates_better_via').value = profile.communicates_better_via || '';
+                document.getElementById('communication_style').value = profile.communication_style || '';
+                document.getElementById('responsiveness').value = profile.responsiveness || '';
+                document.getElementById('works_best_when').value = profile.works_best_when || '';
+                document.getElementById('struggles_with').value = profile.struggles_with || '';
+                document.getElementById('agent_responsiveness').value = profile.agent_responsiveness || '';
+                document.getElementById('strengths').value = profile.strengths || '';
+                document.getElementById('development_areas').value = profile.development_areas || '';
+                document.getElementById('reminders_via').value = profile.reminders_via || '';
+                document.getElementById('if_task_delayed').value = profile.if_task_delayed || '';
+                document.getElementById('personality_type').value = profile.personality_type || '';
+            } else {
+                formTitle.textContent = 'Add New Profile';
                 profileForm.reset();
                 profileIdInput.value = '';
+            }
+        }
 
-                if (profile) {
-                    formTitle.textContent = 'Edit Profile';
-                    document.getElementById('name').value = profile.name;
-                    document.getElementById('role').value = profile.role;
-                    document.getElementById('responsibilities').value = profile.responsibilities;
-                    document.getElementById('strengths').value = profile.strengths;
-                    profileIdInput.value = profile.id;
-                } else {
-                    formTitle.textContent = 'Add New Profile';
-                }
+        function hideForm() {
+            profileFormView.style.display = 'none';
+            profileListView.style.display = 'block';
+            addNewBtn.style.display = 'block';
+        }
+
+        addNewBtn.addEventListener('click', () => showForm());
+        cancelBtn.addEventListener('click', hideForm);
+
+        profileForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const id = profileIdInput.value;
+            const profileData = {
+                name: document.getElementById('name').value,
+                role: document.getElementById('role').value,
+                key_responsibilities: document.getElementById('key_responsibilities').value,
+                communicates_better_via: document.getElementById('communicates_better_via').value,
+                communication_style: document.getElementById('communication_style').value,
+                responsiveness: document.getElementById('responsiveness').value,
+                works_best_when: document.getElementById('works_best_when').value,
+                struggles_with: document.getElementById('struggles_with').value,
+                agent_responsiveness: document.getElementById('agent_responsiveness').value,
+                strengths: document.getElementById('strengths').value,
+                development_areas: document.getElementById('development_areas').value,
+                reminders_via: document.getElementById('reminders_via').value,
+                if_task_delayed: document.getElementById('if_task_delayed').value,
+                personality_type: document.getElementById('personality_type').value,
             };
 
-            const getProfiles = () => JSON.parse(localStorage.getItem('teamProfiles') || '[]');
-            const saveProfiles = (profiles) => localStorage.setItem('teamProfiles', JSON.stringify(profiles));
+            if (id) {
+                // Update
+                const index = profiles.findIndex(p => p.id == id);
+                profiles[index] = { ...profiles[index], ...profileData, id: parseInt(id) };
+            } else {
+                // Create
+                profileData.id = profiles.length > 0 ? Math.max(...profiles.map(p => p.id)) + 1 : 1;
+                profiles.push(profileData);
+            }
 
-            const loadProfiles = () => {
-                profilesContainer.innerHTML = '';
-                const profiles = getProfiles();
-                if (profiles.length === 0) {
-                    profilesContainer.innerHTML = '<div class="text-center text-muted p-4">No profiles yet. Add one to get started!</div>';
-                    return;
-                }
-                profiles.forEach(p => {
-                    const profileElement = document.createElement('div');
-                    profileElement.className = 'list-group-item list-group-item-action';
-                    profileElement.innerHTML = `
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">${p.name || "No Name"}</h5>
-                            <small class="text-muted">ID: ${p.id.substring(0,8)}</small>
-                        </div>
-                        <p class="mb-1 text-muted">${p.role || "No Role"}</p>
-                        <div class="mt-2">
-                            <button class="btn btn-sm btn-outline-secondary edit-btn" data-id="${p.id}">Edit</button>
-                            <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${p.id}">Delete</button>
-                        </div>
-                    `;
-                    profilesContainer.appendChild(profileElement);
-                });
-            };
-            
-            profileForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const profiles = getProfiles();
-                const profileData = {
-                    name: document.getElementById('name').value,
-                    role: document.getElementById('role').value,
-                    responsibilities: document.getElementById('responsibilities').value,
-                    strengths: document.getElementById('strengths').value,
-                };
-
-                const existingId = profileIdInput.value;
-                if (existingId) {
-                    const index = profiles.findIndex(p => p.id === existingId);
-                    if (index !== -1) {
-                        profiles[index] = { ...profiles[index], ...profileData };
-                    }
-                } else {
-                    profileData.id = Date.now().toString(); // Simple unique ID
-                    profiles.push(profileData);
-                }
-
-                saveProfiles(profiles);
-                showListView();
-            });
-
-            profilesContainer.addEventListener('click', (e) => {
-                const id = e.target.getAttribute('data-id');
-                if (e.target.classList.contains('edit-btn')) {
-                    const profile = getProfiles().find(p => p.id === id);
-                    if (profile) showFormView(profile);
-                }
-                if (e.target.classList.contains('delete-btn')) {
-                    profileToDelete = id;
-                    deleteModal.style.display = 'flex';
-                }
-            });
-
-            addProfileBtn.addEventListener('click', () => showFormView());
-            backToListBtn.addEventListener('click', showListView);
-            cancelBtn.addEventListener('click', showListView);
-
-            cancelDeleteBtn.addEventListener('click', () => {
-                deleteModal.style.display = 'none';
-                profileToDelete = null;
-            });
-
-            confirmDeleteBtn.addEventListener('click', () => {
-                if (profileToDelete) {
-                    let profiles = getProfiles();
-                    profiles = profiles.filter(p => p.id !== profileToDelete);
-                    saveProfiles(profiles);
-                    profileToDelete = null;
-                    showListView();
-                }
-            });
-
-            // Initial load
-            showListView();
+            renderProfiles();
+            hideForm();
         });
-    </script>
+
+        profileList.addEventListener('click', e => {
+            if (e.target.classList.contains('btn-edit')) {
+                const id = e.target.dataset.id;
+                const profile = profiles.find(p => p.id == id);
+                showForm(profile);
+            }
+            if (e.target.classList.contains('btn-delete')) {
+                const id = e.target.dataset.id;
+                if (confirm('Are you sure you want to delete this profile?')) {
+                    profiles = profiles.filter(p => p.id != id);
+                    renderProfiles();
+                }
+            }
+        });
+
+        renderProfiles();
+    });
+</script>
+
 </body>
 </html>
-
