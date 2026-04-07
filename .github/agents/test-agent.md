@@ -160,14 +160,14 @@ test('profiles work', () => {
     - Clicking Clear (confirmed) resets profiles to `defaultProfiles`
     - List is re-rendered with default profiles
 
-**Test organisation:**
+**Test organization:**
 ```
 tests/
 ├── unit/
 │   ├── profiles.test.js         # loadProfiles, saveProfiles, profile CRUD logic
 │   ├── rendering.test.js        # renderProfiles, card HTML output
 │   ├── form.test.js             # showForm / hideForm, field population
-│   └── status.test.js          # showStatus success/error/timeout
+│   └── status.test.js           # showStatus success/error/timeout
 ├── integration/
 │   ├── add-edit.integration.test.js    # Full add and edit flows
 │   ├── delete.integration.test.js      # Delete flow with confirmation
